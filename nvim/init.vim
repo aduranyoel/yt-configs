@@ -17,8 +17,7 @@ source ~/AppData/Local/nvim/plugins-config.vim
 source ~/AppData/Local/nvim/maps.vim
 
 " Theme
-colorscheme gruvbox
-let g:gruvbox_contrast_dark = "hard"
+colorscheme onedark
 
 highlight Normal ctermbg=NONE
 set laststatus=2

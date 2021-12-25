@@ -8,9 +8,9 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-" Themes
+ " Themes
 Plug 'morhetz/gruvbox'
-Plug 'shinchu/lightline-gruvbox.vim'
+Plug 'joshdick/onedark.vim'
 
 " NERDTREE
 Plug 'preservim/nerdtree'
