@@ -39,7 +39,7 @@ cnoreabbrev diff Gdiff
 nmap <leader>gs :CocSearct 
 nmap <Leader>fs :FZF<CR>
 nmap <leader>rg :Rg<CR>
-map <Leader>nt :NERDTreeFind<CR>
+map <Leader>e :NERDTreeFind<CR>
 map <Leader>p :Files<CR>
 
 " Remap keys for gotos
