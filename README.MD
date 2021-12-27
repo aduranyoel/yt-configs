@@ -12,6 +12,5 @@
 - load user_profile.ps1 (. <url>)
 - choco install neovim
 - install vim-plug (https://github.com/junegunn/vim-plug)
-- create symbolic link to vim config (gsudo New-Item -ItemType SymbolicLink -Path C:\Users\<User>\AppData\Local\nvim -Target <absolute-nvim-config-path>)
+- create symbolic link to vim config (gsudo New-Item -ItemType SymbolicLink -Path C:\Users\[User]\AppData\Local\nvim -Target [absolute-nvim-config-path])
 - :PlugInstall
-
