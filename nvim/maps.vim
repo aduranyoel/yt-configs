@@ -58,6 +58,7 @@ nnoremap <silent> <Leader><C-l> :TmuxNavigateRight<cr>
 map <Leader>bf :Buffers<cr>
 nmap <leader>bd :bdelete<CR>
 nmap <leader><F4> :bw<CR>
+nmap <leader><S-F4> :bw!<CR>
 
 " faster scrolling
 nnoremap <C-j> 10<C-e>
@@ -66,8 +67,9 @@ nmap <Leader>s <Plug>(easymotion-s2)
 
 " git
 nnoremap <Leader>G :G<cr>
-nnoremap <Leader>gp :Gpush<cr>
-nnoremap <Leader>gl :Gpull<cr>
+nnoremap <Leader>gp :G push<cr>
+nnoremap <Leader>gl :G pull<cr>
+nnoremap <Leader>gc :G commit -m 
 
 " run current file
 nnoremap <Leader>x :!node %<cr>
