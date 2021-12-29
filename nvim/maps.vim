@@ -69,7 +69,8 @@ nmap <Leader>s <Plug>(easymotion-s2)
 nnoremap <Leader>G :G<cr>
 nnoremap <Leader>gp :G push<cr>
 nnoremap <Leader>gl :G pull<cr>
-nnoremap <Leader>gc :G commit -m 
+nnoremap <Leader>gc :G commit -m ""<left>
+nnoremap <Leader>gr :G rebase -i<cr> 
 
 " run current file
 nnoremap <Leader>x :!node %<cr>
