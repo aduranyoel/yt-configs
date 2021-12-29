@@ -24,14 +24,11 @@ Plug 'jiangmiao/auto-pairs'
 " tmux
 Plug 'christoomey/vim-tmux-navigator'
 
-" autocomplete
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
 " IDE
-Plug 'editorconfig/editorconfig-vim'
-" FZF
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim',
+Plug 'editorconfig/editorconfig-vim'
 Plug 'mg979/vim-visual-multi'
 Plug 'easymotion/vim-easymotion'
 Plug 'mhinz/vim-signify'
