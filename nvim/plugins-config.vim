@@ -64,9 +64,6 @@ let g:coc_global_extensions = [
 " tmux navigator
 let g:tmux_navigator_no_mappings = 1
 
-" coc
-autocmd FileType scss setl iskeyword+=@-@
-
 " vim fugitive
 command! -bang -nargs=? -complete=dir GFiles
   \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview(), <bang>0)
@@ -76,6 +73,9 @@ command! -bang -nargs=* Ag
 
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+" coc
+autocmd FileType scss setl iskeyword+=@-@
 
 " if hidden is not set, TextEdit might fail.
 set hidden
