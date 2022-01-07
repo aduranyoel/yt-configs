@@ -15,3 +15,8 @@
 - insrtall ripgrep (https://github.com/BurntSushi/ripgrep)
 - create symbolic link to vim config (gsudo New-Item -ItemType SymbolicLink -Path C:\Users\[User]\AppData\Local\nvim -Target [absolute-nvim-config-path])
 - :PlugInstall
+#### Coc plugins
+- :CocInstall coc-html coc-css coc-tsserver coc-json coc-angular coc-tslint-plugin coc-snippets 
+#### Coc marketplace
+- :CocInstall coc-marketplace
+- use :CocList marketplace

@@ -1,3 +1,5 @@
+source ~/AppData/Local/nvim/coc-config.vim 
+
 " HTML, JSX
 let g:closetag_filenames = '*.html,*.js,*.jsx,*.ts,*.tsx'
 
@@ -56,11 +58,6 @@ let NERDTreeDirArrows=1
 let NERDTreeShowLineNumbers=1
 let NERDTreeMapOpenInTab='\t'
 
-" kite
-"let g:kite_supported_languages = ['*']
-let g:coc_global_extensions = [
-      \ 'coc-tsserver'
-      \ ]
 " tmux navigator
 let g:tmux_navigator_no_mappings = 1
 
@@ -74,28 +71,4 @@ command! -bang -nargs=* Ag
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-" coc
-autocmd FileType scss setl iskeyword+=@-@
-
-" if hidden is not set, TextEdit might fail.
-set hidden
-
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" Better display for messages
-set cmdheight=1
-
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
-
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
-
-" always show signcolumns
-set signcolumn=yes
-
-" fugitive always vertical diffing
-set diffopt+=vertical
 
