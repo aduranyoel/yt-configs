@@ -1,7 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
-  "version": 2,
   "final_space": true,
+  "console_title": true,
+  "console_title_style": "template",
   "console_title_template": "{{if .Root}}root :: {{end}}{{.Shell}} :: {{.Folder}}",
   "blocks": [
     {
@@ -11,19 +12,22 @@
         {
           "type": "session",
           "style": "diamond",
+          "leading_diamond": "\ue0c7\u2593",
           "foreground": "#fafafa",
           "background": "#2f2f2f",
-          "leading_diamond": "\ue0c7\u2593",
-          "template": " {{ if ne .Env.POSH_SESSION_DEFAULT_USER .UserName }}<#7a7a7a>\uf1fa</><#77f5d6>{{ .UserName }}{{ end }}</><#7a7a7a> \ue0b1</>"
+          "properties": {
+            "postfix": "<#7a7a7a> \ue0b1</>",
+            "template": "{{ if ne .Env.POSH_SESSION_DEFAULT_USER .UserName }}<#7a7a7a>\uf1fa</><#77f5d6>{{ .UserName }}{{ end }}</>"
+          }
         },
         {
           "type": "root",
           "style": "diamond",
           "foreground": "#ffff66",
           "background": "#2f2f2f",
-          "template": " \uf0e7<#7a7a7a> \ue0b1</>",
           "properties": {
-            "root_icon": "\uf0e7"
+            "root_icon": "\uF0E7",
+            "postfix": "<#7a7a7a> \ue0b1</>"
           }
         },
         {
@@ -31,10 +35,10 @@
           "style": "diamond",
           "foreground": "#fafafa",
           "background": "#2f2f2f",
-          "template": " {{ .Path }} ",
           "properties": {
-            "folder_icon": "<#B5B2C2>\ue5fe </>",
-            "style": "full"
+            "style": "full",
+            "enable_hyperlink": false,
+            "folder_icon": "<#B5B2C2>\ue5fe </>"
           }
         },
         {
@@ -42,29 +46,38 @@
           "style": "diamond",
           "foreground": "#ffeb3b",
           "background": "#2f2f2f",
-          "template": "<#7a7a7a>\ue0b1 </>{{ .HEAD }} "
+          "properties": {
+            "prefix": "<#7a7a7a>\ue0b1 </>",
+            "template": "{{ .HEAD }}"
+          }
         },
         {
           "type": "text",
           "style": "plain",
           "foreground": "#2f2f2f",
           "background": "transparent",
-          "template": "\ue0b0"
+          "properties": {
+            "text": "\uE0B0",
+            "prefix": "",
+            "postfix": ""
+          }
         }
       ]
     },
     {
       "type": "prompt",
       "alignment": "left",
+      "newline": true,
       "segments": [
         {
           "type": "text",
           "style": "plain",
           "foreground": "#7a7a7a",
-          "template": " ❯ "
+          "properties": {
+            "text": "\u276F"
+          }
         }
-      ],
-      "newline": true
+      ]
     }
   ]
 }

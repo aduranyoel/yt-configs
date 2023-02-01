@@ -1,11 +1,12 @@
-Import-Module oh-my-posh
-oh-my-posh --init --shell pwsh --config $env:USERPROFILE\Documents\yt-configs\powershell\yt-prompt.omp.json | Invoke-Expression
+# Oh-My-Posh
+oh-my-posh init pwsh --config $env:USERPROFILE\Documents\yt-configs\powershell\yt-prompt.omp.json | iex
 
 # PSReadLine
-#Set-PSReadLineOption -EditMode Emacs
-#Set-PSReadLineOption -BellStyle None
-#Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function DeleteChar
-#Set-PSReadLineOption -PredictionSource History
+Import-Module PSReadLine
+Set-PSReadLineOption -EditMode Emacs
+Set-PSReadLineOption -BellStyle None
+Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function DeleteChar
+Set-PSReadLineOption -PredictionSource History
 
 # Fzf
 Import-Module PSFzf
@@ -23,4 +24,3 @@ Set-Alias ll ls
 Set-Alias less 'C:\Program Files\Git\usr\bin\less.exe'
 Set-Alias grep findstr
 Set-Alias .. cd..
-
