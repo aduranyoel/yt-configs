@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvim:*)",
+      "Bash(java:*)",
+      "Bash(lazygit --version)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(d.get\\('nvim-treesitter', {}\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k\\) for k in d if 'java' in k.lower\\(\\) or 'jdt' in k.lower\\(\\)]\")"
+    ]
+  }
+}
