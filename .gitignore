@@ -1,0 +1,8 @@
+# ignorar todo
+*
+
+# incluir
+!.gitignore
+!nvim/
+!nvim/**
+
