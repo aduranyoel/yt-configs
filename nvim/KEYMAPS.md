@@ -8,7 +8,8 @@
 | --- | --- |
 | `Space e` o `:tree` | Abrir o cerrar el árbol |
 | `Space E` | Revelar el archivo actual en el árbol |
-| `Enter`, `a`, `r` en el árbol | Abrir, crear y renombrar |
+| `Enter`, `a` en el árbol | Abrir o crear |
+| `r` o `u` en el árbol | Renombrar o editar la ruta completa para mover; actualizar referencias si el LSP lo admite |
 | `U` en el árbol | Activar o desactivar el filtro de carpetas |
 | `g?` en el árbol | Ver los atajos del árbol |
 | `Space p` o `Space fs` | Encontrar un archivo con Telescope |
@@ -24,6 +25,7 @@
 | `Space bf` | Buscar en buffers abiertos |
 | `Space da` | Buscar diagnósticos con Telescope |
 | `Ctrl+q` en Telescope | Enviar resultados a quickfix |
+| `Esc` en Telescope | Cerrar directamente el panel |
 
 ## LSP y formato
 
@@ -35,8 +37,17 @@
 | `Enter` o `Esc` en el panel de referencias | Ir a la referencia elegida o cerrar el panel |
 | `K` | Ver documentación del símbolo |
 | `Space rn` o `grn` | Renombrar el símbolo |
-| `Space a` o `gra` | Pedir acciones de código en modo normal o visual |
-| `Space f` | Formatear el archivo o la selección |
+| `Space a` o `gra` | Elegir acciones de código en Telescope, en modo normal o visual |
+| `Ctrl+n` / `Ctrl+p` o flechas en acciones | Recorrer opciones; escribir filtra, `Enter` aplica y cierra, `Esc` cancela |
+| `Space ia` | Agregar imports faltantes; en Java también organizarlos |
+| `Space io` | Organizar imports con el servidor del lenguaje |
+| `Space iu` | Eliminar imports sin usar en JavaScript, TypeScript y React |
+| `Space cf` | Aplicar una corrección de archivo de tipo `source.fixAll` |
+| `Space re` | Elegir una extracción con Telescope, en modo normal o visual |
+| `Space f` en modo normal | Formatear manualmente el archivo |
+| `Space f` en modo visual | Formatear manualmente la selección |
+| `Space gf` en modo normal | Formatear los bloques agregados o modificados sin stage del archivo actual, incluidos cambios sin guardar |
+| `:ConformInfo` | Ver el formateador y su disponibilidad; el formato no se ejecuta al guardar |
 | `Space ef` | Aplicar correcciones automáticas de ESLint |
 | `[g`, `]g` | Ir al diagnóstico anterior y siguiente |
 | `Space dd` | Ver el diagnóstico bajo el cursor |
@@ -52,6 +63,7 @@
 | Atajo | Acción |
 | --- | --- |
 | `(`, `{`, `[`, `"`, `'` en modo insertar | Insertar el par y dejar el cursor entre ambos |
+| `Enter` entre `()`, `{}` o `[]` en modo insertar | Abrir una línea interior indentada y mover el cierre a su propia línea; si hay una sugerencia seleccionada, aceptarla |
 | `Space C` con texto seleccionado | Elegir un formato como camelCase, snake_case o Title Case |
 | `Space C` con selecciones de Visual Multi | Convertir todas las selecciones con `c` para camelCase, `s` para snake_case o `t` para Title Case |
 | `Ctrl+n` | Seleccionar la siguiente coincidencia en modo normal o visual |
@@ -106,8 +118,11 @@
 | --- | --- |
 | `Space G` | Abrir LazyGit en la raíz del repositorio |
 | `q` en LazyGit | Cerrar LazyGit y volver al editor |
+| `e` en LazyGit | Abrir el archivo seleccionado como buffer en la ventana principal de Neovim |
 | `:Git` | Abrir el estado de Git con Fugitive |
 | `Space gd` | Comparar el archivo actual con HEAD |
+| `Space gf` | Formatear los bloques modificados sin stage del archivo actual |
+| `Space gD` | Preguntar la rama y comparar el archivo actual con ella |
 | `Space gc` | Crear un commit con los cambios agregados al índice |
 | `Space gH` | Ver el historial del archivo actual |
 | `s`, `u`, `=`, `cc` en el estado de Git | Agregar al índice, sacar del índice, mostrar diff y abrir el editor de commit |

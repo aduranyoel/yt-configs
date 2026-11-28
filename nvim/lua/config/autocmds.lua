@@ -12,23 +12,6 @@ autocmd('TextYankPost', {
   end,
 })
 
--- Remove trailing whitespace on save (skip binary and markdown files)
-augroup('TrimWhitespace', { clear = true })
-autocmd('BufWritePre', {
-  group = 'TrimWhitespace',
-  pattern = '*',
-  callback = function()
-    local ft = vim.bo.filetype
-    local skip = { markdown = true, md = true }
-    if skip[ft] then return end
-    if vim.bo.binary then return end
-    if vim.bo.buftype ~= '' then return end
-    local view = vim.fn.winsaveview()
-    vim.cmd([[keeppatterns %s/\s\+$//e]])
-    vim.fn.winrestview(view)
-  end,
-})
-
 -- Close the references window after a successful quickfix jump.
 autocmd('FileType', {
   group = augroup('ReferenceQuickfix', { clear = true }),
@@ -50,3 +33,4 @@ autocmd('FileType', {
 })
 
 require('config.lsp-shared').setup()
+require('config.word-highlight').setup()

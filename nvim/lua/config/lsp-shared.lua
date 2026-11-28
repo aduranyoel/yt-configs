@@ -1,5 +1,11 @@
 local M = {}
 
+local function source_action(kind)
+  return function()
+    vim.lsp.buf.code_action({ context = { only = { kind }, diagnostics = {} }, apply = true })
+  end
+end
+
 local function pick_references()
   vim.lsp.buf.references(nil, {
     on_list = function(list)
@@ -12,6 +18,8 @@ local function pick_references()
         id = id,
         prompt_title = 'Referencias',
         layout_config = { width = 0.9, preview_cutoff = 50 },
+        path_display = { 'tail' },
+        fname_width = 42,
         trim_text = true,
         attach_mappings = function(prompt, map)
           map('i', '<Esc>', actions.close)
@@ -41,6 +49,13 @@ local function pick_references()
 end
 
 function M.setup()
+  -- File operations are handled by nvim-lsp-file-operations when the tree opens.
+  vim.lsp.config('*', {
+    capabilities = {
+      workspace = { fileOperations = { didRename = true, willRename = true } },
+    },
+  })
+
   vim.diagnostic.config({
     virtual_text = true,
     severity_sort = true,
@@ -67,6 +82,22 @@ function M.setup()
       end, 'Highlight symbol references in this file')
       map('n', '<Leader>rn', vim.lsp.buf.rename, 'Rename symbol')
       map({ 'n', 'x' }, '<Leader>a', vim.lsp.buf.code_action, 'Code action')
+      map('n', '<Leader>cf', source_action('source.fixAll'), 'Apply available source fixes')
+      map({ 'n', 'x' }, '<Leader>re', function()
+        vim.lsp.buf.code_action({ context = { only = { 'refactor.extract' }, diagnostics = {} } })
+      end, 'Extract variable, function or method')
+
+      if client.name == 'jdtls' then
+        local function java_imports() require('jdtls').organize_imports() end
+        map('n', '<Leader>ia', java_imports, 'Add missing and organize Java imports')
+        map('n', '<Leader>io', java_imports, 'Organize Java imports')
+      else
+        map('n', '<Leader>ia', source_action('source.addMissingImports'), 'Add missing imports')
+        map('n', '<Leader>io', source_action('source.organizeImports'), 'Organize imports')
+        if client.name == 'ts_ls' then
+          map('n', '<Leader>iu', source_action('source.removeUnusedImports'), 'Remove unused imports')
+        end
+      end
 
       if client:supports_method('textDocument/completion', event.buf) then
         vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })

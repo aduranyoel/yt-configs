@@ -105,6 +105,7 @@ return {
     event = 'InsertEnter',
     opts = {
       check_ts = true,
+      -- Enter is shared with native completion in config.keymaps.
       map_cr = false,
       enabled = function(bufnr)
         return vim.bo[bufnr].filetype ~= 'grug-far'

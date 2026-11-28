@@ -1,5 +1,71 @@
 local lazygit_terminals = {}
 
+local function format_git_hunks()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local filename = vim.api.nvim_buf_get_name(bufnr)
+  local base = vim.system({ 'git', 'show', ':./' .. vim.fs.basename(filename) }, {
+    cwd = vim.fs.dirname(filename),
+    text = true,
+  }):wait(2000)
+  if base.code ~= 0 then
+    vim.notify(base.stderr or 'No se pudo leer el archivo del índice de Git.', vim.log.levels.ERROR)
+    return
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local current = table.concat(lines, '\n') .. (vim.bo[bufnr].endofline and '\n' or '')
+  local hunks = vim.diff(base.stdout, current, { result_type = 'indices' }) or {}
+  local count = 0
+  -- Work upwards so a formatter adding lines does not shift earlier hunks.
+  for index = #hunks, 1, -1 do
+    local first, added = hunks[index][3], hunks[index][4]
+    if added > 0 then
+      local last = first + added - 1
+      local line = vim.api.nvim_buf_get_lines(bufnr, last - 1, last, false)[1]
+      local failed
+      require('conform').format({
+        bufnr = bufnr,
+        lsp_format = 'fallback',
+        range = { start = { first, 0 }, ['end'] = { last, #line } },
+      }, function(format_err) failed = format_err end)
+      if failed then return end
+      count = count + 1
+    end
+  end
+  if count == 0 then
+    vim.notify('No hay líneas agregadas o modificadas sin stage para formatear.', vim.log.levels.INFO)
+  end
+end
+
+local function lazygit_config()
+  local base = vim.env.LG_CONFIG_FILE
+  if not base or base == '' then
+    local directory = vim.fn.systemlist({ 'lazygit', '--print-config-dir' })[1]
+    if vim.v.shell_error == 0 and directory then
+      local path = directory .. '/config.yml'
+      if vim.fn.filereadable(path) == 1 then base = path end
+    end
+  end
+  local editor = vim.fn.stdpath('config') .. '/lazygit.yml'
+  return base and base ~= '' and (base .. ',' .. editor) or editor
+end
+
+local function compare_branch()
+  vim.ui.input({
+    prompt = 'Comparar archivo con rama: ',
+    completion = 'customlist,fugitive#CompleteObject',
+  }, function(branch)
+    if not branch or vim.trim(branch) == '' then return end
+    local ok, message = pcall(vim.cmd.Gdiffsplit, {
+      args = { vim.trim(branch) },
+      magic = { file = false, bar = false },
+    })
+    if not ok then
+      vim.notify(tostring(message), vim.log.levels.WARN)
+    end
+  end)
+end
+
 local function format_line_blame(_, blame)
   -- A queued lookup can finish after current-line blame is disabled.
   if not require('gitsigns.config').config.current_line_blame then
@@ -32,6 +98,7 @@ local function open_lazygit()
       direction = 'float',
       display_name = 'LazyGit',
       hidden = true,
+      env = { LG_CONFIG_FILE = lazygit_config(), NVIM = vim.v.servername },
       on_open = function()
         vim.cmd.startinsert()
       end,
@@ -56,6 +123,7 @@ return {
     cmd = { 'Git', 'G', 'Gdiffsplit', 'Gclog' },
     keys = {
       { '<Leader>gd', '<Cmd>Gdiffsplit HEAD<CR>', desc = 'Diff current file against HEAD' },
+      { '<Leader>gD', compare_branch, desc = 'Diff current file against another branch' },
       { '<Leader>gc', '<Cmd>Git commit<CR>', desc = 'Create Git commit' },
       { '<Leader>gH', '<Cmd>Git log --oneline -- %<CR>', desc = 'Git history for current file' },
     },
@@ -96,6 +164,7 @@ return {
         map('<Leader>ghs', gs.stage_hunk, 'Stage hunk')
         map('<Leader>ghr', gs.reset_hunk, 'Reset hunk')
         map('<Leader>ghp', gs.preview_hunk, 'Preview hunk')
+        map('<Leader>gf', format_git_hunks, 'Format unstaged Git hunks in current file')
       end,
     },
   },

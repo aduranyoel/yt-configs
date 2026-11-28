@@ -1,5 +1,11 @@
 return {
   {
+    'antosha417/nvim-lsp-file-operations',
+    main = 'lsp-file-operations',
+    -- Loaded after nvim-tree.setup(), before its first FileType event.
+    opts = { auto_save = false },
+  },
+  {
     'mason-org/mason.nvim',
     cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUninstallAll', 'MasonUpdate', 'MasonLog' },
     opts = { ui = { border = 'rounded' } },
@@ -26,8 +32,8 @@ return {
   },
   {
     'stevearc/conform.nvim',
-    event = 'BufWritePre',
     cmd = 'ConformInfo',
+    dependencies = { 'mason-org/mason.nvim' },
     keys = {
       { '<Leader>f', function() require('conform').format({ lsp_format = 'fallback' }) end,
         mode = { 'n', 'x' }, desc = 'Format buffer or selection' },
@@ -45,8 +51,16 @@ return {
         json = { 'prettier' },
         jsonc = { 'prettier' },
         java = { 'google-java-format' },
+        sql = { 'sql_formatter' },
+        mysql = { 'sql_formatter' },
       },
-      format_on_save = { timeout_ms = 500, lsp_format = 'fallback' },
+      formatters = {
+        sql_formatter = {
+          append_args = function(_, ctx)
+            return vim.bo[ctx.buf].filetype == 'mysql' and { '--language', 'mysql' } or {}
+          end,
+        },
+      },
     },
   },
   {

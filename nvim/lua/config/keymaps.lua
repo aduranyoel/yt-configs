@@ -30,10 +30,10 @@ completion_tab('<S-Tab>', -1, '<C-p>')
 
 map('i', '<CR>', function()
   if vim.fn.pumvisible() == 1 and vim.fn.complete_info({ 'selected' }).selected >= 0 then
-    return '<C-y>'
+    return vim.keycode('<C-y>')
   end
-  return '<CR>'
-end, { expr = true, desc = 'Accept selected completion or insert newline' })
+  return require('nvim-autopairs').autopairs_cr()
+end, { expr = true, replace_keycodes = false, desc = 'Accept completion or insert indented newline' })
 
 -- Copy to clipboard
 map('v', '<C-c>', 'y')
@@ -92,6 +92,7 @@ map('n', '<Leader>dd', vim.diagnostic.open_float, { desc = 'Diagnostic under cur
 map('n', '<Leader>n', function()
   vim.cmd.nohlsearch()
   vim.lsp.buf.clear_references()
+  require('config.word-highlight').clear()
 end, { desc = 'Clear search and reference highlighting' })
 map('n', '<Leader>rf', [[:%s/\V//gc<Left><Left><Left><Left>]], { desc = 'Replace in current file' })
 map('n', '<Leader>rr', [[:%s/\v//gc<Left><Left><Left><Left>]], { desc = 'Replace regex in current file' })

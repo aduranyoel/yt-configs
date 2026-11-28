@@ -1,5 +1,4 @@
 return {
-  -- Theme
   {
     'navarasu/onedark.nvim',
     lazy = false,
@@ -9,7 +8,6 @@ return {
       require('onedark').load()
     end,
   },
-  -- Show Tabs
   {
     'akinsho/bufferline.nvim',
     event = { 'BufReadPost', 'BufNewFile' },
@@ -37,7 +35,6 @@ return {
       },
     },
   },
-  -- File Explorer
   {
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -83,6 +80,7 @@ return {
         },
         actions = { open_file = { quit_on_open = true } },
       })
+      require('lazy').load({ plugins = { 'nvim-lsp-file-operations' } })
     end,
   },
 }

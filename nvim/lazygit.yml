@@ -1,0 +1,10 @@
+os:
+  editPreset: nvim-remote
+  editInTerminal: false
+  edit: >-
+    nvim --server "$NVIM" --remote-expr 'luaeval("require(\"toggleterm.terminal\").get(vim.b.toggle_number, true):close()")' &&
+    nvim --server "$NVIM" --remote {{filename}}
+  editAtLine: >-
+    nvim --server "$NVIM" --remote-expr 'luaeval("require(\"toggleterm.terminal\").get(vim.b.toggle_number, true):close()")' &&
+    nvim --server "$NVIM" --remote {{filename}} &&
+    nvim --server "$NVIM" --remote-send ":{{line}}<CR>"

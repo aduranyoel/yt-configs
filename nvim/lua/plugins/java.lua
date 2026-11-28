@@ -41,6 +41,7 @@ return {
         jdtls.start_or_attach({
           cmd = { 'jdtls', '-data', workspace },
           root_dir = root,
+          capabilities = vim.lsp.config['*'].capabilities,
           handlers = { ['client/registerCapability'] = refresh_java_hints },
           settings = {
             java = { inlayHints = { parameterNames = { enabled = 'literals' } } },

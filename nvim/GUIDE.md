@@ -18,7 +18,30 @@ Necesitás Neovim 0.11.3 o posterior, Git, Node.js con npm, ripgrep (`rg`) y un 
 
 3. Cuando termine la instalación, volvé a abrir el archivo del proyecto. Si el servidor no se conecta, revisá `:checkhealth vim.lsp` en ese archivo y `:MasonLog` para errores de instalación.
 
-Para formatear, Conform busca el Prettier del proyecto cuando está disponible. Podés instalar los formateadores con `:MasonInstall prettier google-java-format`. Presioná `Space f` para formatear el archivo o la selección. Conform también formatea al guardar y puede recurrir al LSP si el servidor ofrece formato. `:ConformInfo` muestra qué formateadores encontró para el archivo actual.
+### Formato manual
+
+El formato se ejecuta con `Space f`: en modo normal formatea el archivo y, en modo visual, la selección. Guardar con `Space w` o `:w` no formatea ni elimina espacios finales. Después de formatear, guardá cuando quieras escribir los cambios en disco.
+
+| Lenguajes | Formateador |
+| --- | --- |
+| JavaScript / Node.js, TypeScript y React (`.jsx`, `.tsx`) | Prettier |
+| HTML, CSS, SCSS, Less, JSON y JSONC | Prettier |
+| Java | google-java-format |
+| SQL y MySQL | sql-formatter |
+
+Los ejecutables se gestionan con Mason. Para instalarlos en otra máquina:
+
+```vim
+:MasonInstall prettier google-java-format sql-formatter@15.9.0
+```
+
+Conform busca el Prettier del proyecto cuando está disponible y respeta su configuración, como `.prettierrc`. Para SQL, podés definir el dialecto y el estilo en `.sql-formatter.json`; no hace falta una conexión a la base de datos para formatear. El tipo de archivo `mysql` usa el dialecto MySQL.
+
+Conform se carga al usar el atajo o `:ConformInfo`, que muestra los formateadores disponibles para el archivo actual. Si falta el ejecutable configurado y el LSP ofrece formato, se usa como alternativa.
+
+Para formatear los bloques modificados del archivo actual, usá `Space gf` en modo normal. Compara el buffer, incluidos los cambios sin guardar, con el índice de Git. Procesa las líneas agregadas o modificadas que todavía no están staged; omite las eliminaciones puras. El archivo debe estar seguido por Git.
+
+El formato se aplica por rangos: algunos formateadores pueden ajustar la instrucción o bloque que contiene la línea modificada. Revisá el resultado con `Space gd` y guardá con `Space w`. El atajo no guarda ni agrega cambios al stage. Para un archivo nuevo que Git aún no sigue, usá `Space f`.
 
 ## Apariencia
 
@@ -44,7 +67,7 @@ Desde la raíz del repositorio, ejecutá `nvim .` para abrir el árbol o `nvim` 
 | `Space s` | Saltar a dos caracteres visibles con EasyMotion |
 | `Space bf` | Buscar entre los buffers abiertos |
 
-En Telescope, presioná `Enter` para abrir el resultado elegido. `Ctrl+q` envía los resultados a quickfix, donde podés recorrerlos con `:cnext` y `:cprev`. Usá `:Telescope` para descubrir otros buscadores.
+En Telescope, presioná `Enter` para abrir el resultado elegido y `Esc` para cerrar directamente el panel. `Ctrl+q` envía los resultados a quickfix, donde podés recorrerlos con `:cnext` y `:cprev`. Usá `:Telescope` para descubrir otros buscadores.
 
 ### Buscar y reemplazar
 
@@ -79,13 +102,45 @@ Por ejemplo, para agregar un punto y coma al final de varias líneas, grabá `qa
 
 ## Navegar y refactorizar código
 
-1. Poné el cursor sobre un símbolo. Usá `gd` para ir a su definición o `grr` para abrir sus referencias en Telescope con vista previa. Podés escribir para filtrar los resultados. `Enter` salta a la referencia elegida y cierra el panel. `Esc` lo cierra sin moverte.
+1. Poné el cursor sobre un símbolo. Usá `gd` para ir a su definición o `grr` para abrir sus referencias en Telescope con vista previa. La lista muestra el nombre del archivo, la línea y la columna. Podés escribir para filtrar los resultados. `Enter` salta a la referencia elegida y cierra el panel. `Esc` lo cierra sin moverte.
 2. Presioná `Space rn`, escribí el nuevo nombre y confirmá con `Enter`. El servidor actualiza la declaración y las referencias que reconoce en el proyecto. Revisá los cambios y guardá los buffers modificados con `:wall`.
-3. Presioná `Space a` sobre un símbolo o desde una selección visual para pedir acciones de código. El servidor decide qué acciones ofrece, como extraer una función a partir de las líneas seleccionadas.
+3. Presioná `Space a` sobre un símbolo o desde una selección visual para ver sus acciones de código en un menú compacto de Telescope. Escribí para filtrar, recorré las opciones con `Ctrl+n` / `Ctrl+p` o las flechas y elegí con `Enter`; el menú se cierra al aplicar la acción. `Esc` cierra sin aplicar cambios. El servidor decide qué acciones ofrece, como implementar métodos, generar constructores o extraer una función a partir de las líneas seleccionadas.
 
 Para resaltar las referencias del símbolo en el archivo actual, poné el cursor sobre el nombre y pulsá `Space rh`. `Space n` quita el resaltado.
 
+Al detener el cursor sobre una palabra durante unos 300 ms, se resaltan sutilmente sus coincidencias completas en el archivo. El resaltado se limpia al mover el cursor, entrar en modo insertar o pulsar `Space n`.
+
 En modo insertar, usá `Ctrl+x Ctrl+o` para pedir sugerencias. También podés usar `Alt+Space`. El menú se abre automáticamente con los caracteres de activación del servidor, como `.` en TypeScript. Recorré las sugerencias con `Tab` y `Shift+Tab` y aceptá la seleccionada con `Enter`. En un snippet, `Tab` y `Shift+Tab` también mueven el cursor entre campos.
+
+### Imports y acciones de desarrollo
+
+Estos atajos usan el servidor del lenguaje del proyecto:
+
+| Atajo | Acción |
+| --- | --- |
+| `Space ia` | Agregar imports faltantes en JavaScript, TypeScript, React o Java |
+| `Space io` | Ordenar y organizar imports |
+| `Space iu` | Eliminar imports sin usar en JavaScript, TypeScript y React |
+| `Space cf` | Aplicar las correcciones de archivo que ofrece el servidor |
+| `Space re` | Elegir con Telescope una extracción de variable, función o método; también desde una selección visual |
+| `Space rn` | Renombrar un símbolo y sus referencias |
+
+En Java, `Space ia` y `Space io` usan **Organize Imports** de JDTLS: agrega imports resolubles, ordena y elimina los innecesarios. Si hay varios tipos con el mismo nombre, elegí el paquete correcto. En TypeScript, `Space io` ordena los imports y `Space iu` elimina los que no se usan.
+
+Para una corrección puntual, poné el cursor sobre el error y usá `Space a`; también ofrece generar constructores, implementar métodos o cambiar una firma cuando el servidor lo permite. `Space cf` ejecuta las acciones `source.fixAll` disponibles, por ejemplo convertir una función con `await` en `async`. Para las correcciones de ESLint, seguí usando `Space ef`. Los atajos directos aplican una acción única; si hay varias, elegí una en Telescope. La integración usa `telescope-ui-select.nvim` y se carga con Telescope al conectarse el primer LSP o al abrir un buscador.
+
+Los imports dependen de que el servidor haya indexado el proyecto y pueda resolver sus dependencias. Revisá los cambios y guardá con `Space w` o `:wall` si se modificaron varios archivos.
+
+### Renombrar o mover archivos y actualizar referencias
+
+[nvim-lsp-file-operations](https://github.com/antosha417/nvim-lsp-file-operations) conecta el árbol con los servidores de lenguaje. Se carga al abrir el árbol.
+
+1. Abrí un archivo del proyecto y esperá a que su servidor termine de iniciar e indexar.
+2. Usá `Space E` para localizarlo en el árbol y `r` para cambiar su nombre. Con `u` podés editar la ruta completa para moverlo a otra carpeta.
+3. El servidor actualiza los imports y referencias que reconoce. Por ejemplo, al renombrar `math.ts` a `greeting.ts`, un import desde `./math` pasa a `./greeting`, incluso en archivos que estaban cerrados.
+4. El nombre cambia en disco. Las ediciones de referencias quedan en buffers para revisarlas; guardalas con `:wall`.
+
+La actualización depende del soporte del servidor y se activa al renombrar desde el árbol de Neovim. Para renombrar variables, funciones o clases, usá `Space rn` sobre el símbolo.
 
 ### Sugerencias de IA con GitHub Copilot
 
@@ -93,7 +148,19 @@ Copilot se carga al invocar `:Copilot`. Necesita Node.js 22 o posterior y una cu
 
 ## Edición y varios cursores
 
-En modo insertar, escribir una comilla, paréntesis, llave o corchete de apertura agrega su cierre y deja el cursor entre los dos.
+El autocierre lo hace [nvim-autopairs](https://github.com/windwp/nvim-autopairs), que se carga al entrar en modo insertar. Escribir una comilla, paréntesis, llave o corchete de apertura agrega su cierre y deja el cursor entre los dos.
+
+Presioná `Enter` entre `()`, `{}` o `[]` para abrir una línea interior indentada y dejar el cierre en su propia línea. La indentación usa Tree-sitter y las reglas del lenguaje, respetando la configuración del archivo. Por ejemplo, dentro de un método Java (`|` representa el cursor):
+
+```java
+class Example {
+  void run() {
+    |
+  }
+}
+```
+
+Si hay una sugerencia de autocompletado seleccionada, `Enter` la acepta. Sin una sugerencia seleccionada, inserta el salto de línea. No hace falta instalar otro plugin para este comportamiento.
 
 Para cambiar el formato de un texto, seleccioná con `v`, pulsá `Space C` y elegí un estilo con `Enter`. Por ejemplo, `nombre de usuario` se puede convertir en `nombreDeUsuario`, `nombre_de_usuario`, `Nombre De Usuario` o `nombre-de-usuario`.
 
@@ -107,7 +174,13 @@ Con varias coincidencias seleccionadas, pulsá `Space C` y después `c` para cam
 
 Usá `Space G` desde un archivo del repositorio para abrir LazyGit. Desde ahí podés revisar cambios, preparar commits y gestionar ramas. Pulsá `q` para volver al editor.
 
+En el panel de archivos de LazyGit, `e` oculta la ventana de LazyGit y abre el archivo seleccionado como buffer en la ventana principal de Neovim. Desde el diff, también conserva la línea seleccionada. Volvé a LazyGit con `Space G`. `o` usa la aplicación asociada del sistema operativo.
+
 Usá `:Git` para abrir Fugitive, `Space gd` para comparar el archivo actual con HEAD y `Space gH` para ver su historial. Podés ejecutar `:Git pull` y `:Git push` desde el editor. Para navegar los bloques de cambios en el archivo, usá `[c` y `]c` con Gitsigns.
+
+`Space gf` formatea los bloques con cambios sin stage del archivo actual. Los cambios que solo están staged quedan fuera de esta comparación.
+
+Para comparar el archivo con otra rama, pulsá `Space gD` y escribí, por ejemplo, `develop` u `origin/develop`. `Tab` completa los nombres disponibles y `Enter` abre la comparación. `Esc` cancela.
 
 En archivos de Git, la barra de estado muestra el autor y la fecha y hora del último cambio de la línea actual. `Sin commit` indica que la línea tiene cambios pendientes. Usá `Space gb` para mostrar u ocultar ese dato.
 

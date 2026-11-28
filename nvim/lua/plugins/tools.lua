@@ -27,7 +27,11 @@ return {
     'nvim-telescope/telescope.nvim',
     branch = '0.1.x',
     cmd = 'Telescope',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    event = 'LspAttach',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-ui-select.nvim',
+    },
     keys = {
       { '<Leader>p',  ':Telescope find_files<CR>',  desc = 'Find files' },
       { '<Leader>rg', ':Telescope live_grep<CR>',   desc = 'Live grep' },
@@ -37,13 +41,25 @@ return {
       { '<Leader>P', grep_project_text, mode = { 'n', 'x' }, desc = 'Search word or selection in project' },
     },
     config = function()
-      require('telescope').setup({
+      local telescope = require('telescope')
+      local actions = require('telescope.actions')
+      telescope.setup({
         defaults = {
           layout_strategy = 'horizontal',
-          layout_config   = { preview_width = 0.55 },
+          layout_config   = { horizontal = { preview_width = 0.55 } },
           file_ignore_patterns = { 'node_modules/', '%.git/' },
+          mappings = { i = { ['<Esc>'] = actions.close } },
+        },
+        extensions = {
+          ['ui-select'] = {
+            require('telescope.themes').get_dropdown({
+              previewer = false,
+              layout_config = { width = 0.8, height = 0.4 },
+            }),
+          },
         },
       })
+      telescope.load_extension('ui-select')
     end,
   },
 
